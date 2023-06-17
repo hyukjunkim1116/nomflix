@@ -1,7 +1,8 @@
 import { useQuery } from "react-query";
 import styled from "styled-components";
 import { motion, AnimatePresence, useViewportScroll } from "framer-motion";
-import { getMovies, IGetMoviesResult } from "../api";
+import { getMovies, IGetMoviesResult,getTopRatedMovies,
+  getUpcomingMovies } from "../api";
 import { makeImagePath } from "../utils";
 import { useState } from "react";
 import { useHistory, useRouteMatch } from "react-router-dom";
@@ -165,6 +166,8 @@ const infoVariants = {
 const offset = 6;
 
 function Home() {
+  const {data : topRatedData, isLoading : topRatedLoading } = useQuery<IGetMoviesResult>(["movies", "topRated"], getTopRatedMovies);
+  const {data : upcomingData, isLoading : upcomingLoading } = useQuery<IGetMoviesResult>(["movies", "upcoming"], getUpcomingMovies);
   const history = useHistory();
   const bigMovieMatch = useRouteMatch<{ movieId: string }>("/movies/:movieId");
   const { scrollY } = useViewportScroll();
