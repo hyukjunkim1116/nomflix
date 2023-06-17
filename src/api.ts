@@ -19,6 +19,28 @@ export interface IGetMoviesResult {
   total_pages: number;
   total_results: number;
 }
+export interface IGetLatestMoviesResult {
+  id: number;
+  backdrop_path: null;
+  poster_path: null;
+  title: string;
+  overview: string;
+}
+interface ITv {
+  backdrop_path: string;
+  poster_path: string;
+  name: string;
+  overview: string;
+  id: number;
+}
+export interface IGetTvResult {
+  results: ITv[];
+}
+export function getLatestMovies() {
+  return fetch(`${BASE_PATH}/movie/latest?api_key=${API_KEY}&language=en-US&page=1`).then(
+      response => response.json()
+  );
+}
 export function getTopRatedMovies() {
   return fetch(`${BASE_PATH}/movie/top_rated?api_key=${API_KEY}&language=en-US&page=1`).then(
       response => response.json()
@@ -33,5 +55,30 @@ export function getUpcomingMovies() {
 export function getMovies() {
   return fetch(`${BASE_PATH}/movie/now_playing?api_key=${API_KEY}`).then(
     (response) => response.json()
+  );
+}
+
+
+
+export function getTv() {
+  return fetch(`${BASE_PATH}/tv/airing_today?api_key=${API_KEY}&language=en-US&page=1`).then(
+      response => response.json()
+  );
+}
+
+export function getTopRatedTv() {
+  return fetch(`${BASE_PATH}/tv/top_rated?api_key=${API_KEY}&language=en-US&page=1`).then(
+      response => response.json()
+  );
+}
+
+export function getPopularTv() {
+  return fetch(`${BASE_PATH}/tv/popular?api_key=${API_KEY}&language=en-US&page=1`).then(
+      response => response.json()
+  );
+}
+export function getLatestTv() {
+  return fetch(`${BASE_PATH}/tv/latest?api_key=${API_KEY}&language=en-US&page=1`).then(
+      response => response.json()
   );
 }
