@@ -19,13 +19,7 @@ export interface IGetMoviesResult {
   total_pages: number;
   total_results: number;
 }
-export interface IGetLatestMoviesResult {
-  id: number;
-  backdrop_path: null;
-  poster_path: null;
-  title: string;
-  overview: string;
-}
+
 interface ITv {
   backdrop_path: string;
   poster_path: string;
@@ -60,7 +54,7 @@ export function getMovies() {
 
 
 
-export function getTv() {
+export function getAiringTodayTv() {
   return fetch(`${BASE_PATH}/tv/airing_today?api_key=${API_KEY}&language=en-US&page=1`).then(
       response => response.json()
   );
