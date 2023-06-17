@@ -5,7 +5,7 @@ import { getAiringTodayTv,
   getTopRatedTv,
   getPopularTv,
   getLatestTv,
-  IGetTvResult } from "../api";
+  IGetTvResults } from "../api";
 import { makeImagePath,makeComingSoonImg } from "../utils";
 import { useState } from "react";
 import { useHistory, useRouteMatch } from "react-router-dom";
@@ -188,10 +188,10 @@ const offset = 6;
 
 function Tv() {
 
-  const {data : nowAiringData, isLoading : nowAiringDataLoading} = useQuery<IGetTvResult>(["tv", "nowAiring"], getAiringTodayTv);
-  const {data : topRateData, isLoading : topRatedDataLoading } = useQuery<IGetTvResult>(["tv", "topRated"], getTopRatedTv);
+  const {data : nowAiringData, isLoading : nowAiringDataLoading} = useQuery<IGetTvResults>(["tv", "nowAiring"], getAiringTodayTv);
+  const {data : topRateData, isLoading : topRatedDataLoading } = useQuery<IGetTvResults>(["tv", "topRated"], getTopRatedTv);
   const {data : latestData, isLoading : latestDataLoading } = useQuery(["tv", "latest"], getLatestTv);
-  const {data : popularData, isLoading : popularDataLoading } = useQuery<IGetTvResult>(["tv", "popular"], getPopularTv);
+  const {data : popularData, isLoading : popularDataLoading } = useQuery<IGetTvResults>(["tv", "popular"], getPopularTv);
   const data = [ nowAiringData, topRateData, popularData,latestData]
   const isLoading = ( nowAiringDataLoading && topRatedDataLoading   && popularDataLoading&&latestDataLoading)
   const [branch, setbranch] = useState(0);
@@ -230,10 +230,10 @@ function Tv() {
         <>
           <Banner
             onClick={increseIndex}
-            bgPhoto={makeImagePath(nowAiringData?.results[0].backdrop_path || "")}
+            bgPhoto={makeImagePath(topRateData?.results[0].backdrop_path || "")}
           >
-            <Title>{nowAiringData?.results[0].name}</Title>
-            <Overview>{nowAiringData?.results[0].overview}</Overview>
+            <Title>{topRateData?.results[0].name}</Title>
+            <Overview>{topRateData?.results[0].overview}</Overview>
           </Banner>
           {[0,1, 2,3].map(i => (
             <>

@@ -27,7 +27,7 @@ interface ITv {
   overview: string;
   id: number;
 }
-export interface IGetTvResult {
+export interface IGetTvResults {
   results: ITv[];
 }
 export function getLatestMovies() {
