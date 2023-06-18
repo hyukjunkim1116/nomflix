@@ -202,10 +202,10 @@ function Tv() {
   const bigTvMatch:any = useRouteMatch<{ tvId: any}>("/tv/:tvId");
   const { scrollY } = useViewportScroll();
   const clickedTv =
-    bigTvMatch?.params.tvId &&
-    currentDataBranch?.results?.find((tv:any)=> tv.id === +bigTvMatch.params.tvId)
-  const clickedLatestTv =
-  currentDataBranch
+  bigTvMatch?.params.tvId &&
+  currentDataBranch?.results?.find((tv:any)=> tv.id === +bigTvMatch.params.tvId)
+const clickedLatestTv =
+bigTvMatch?.params.tvId && currentDataBranch
   console.log(clickedLatestTv)
   const toggleLeaving = () => setLeaving((prev) => !prev);
   const onBoxClicked = (tvId: number, branch:number) => {
@@ -253,8 +253,8 @@ function Tv() {
               >
              {data[i]?.results?.slice(1).slice(offset * index, offset * index + offset).map((tv:any) => (
                     <Box
-                      layoutId={`${tv.id-i}`}
-                      key={tv.id}
+                      layoutId={String(`${tv.id-i}`)}
+                      key={String(`${tv.id-i}`)}
                       whileHover="hover"
                       initial="normal"
                       variants={boxVariants}
@@ -284,8 +284,8 @@ function Tv() {
                 key={index}
               >
                     <Box
-                      layoutId={`${data[3]?.id}-${i}`+""}
-                      key={data[3]?.id}
+                      layoutId={String(`${data[3]?.id-i}`)}
+                      key={String(`${data[3]?.id-i}`)}
                       whileHover="hover"
                       initial="normal"
                       variants={boxVariants}
@@ -309,7 +309,7 @@ function Tv() {
 
 {[0,1, 2,3].map(i => (
   <AnimatePresence>
-  {bigTvMatch ? (
+  {bigTvMatch && (
     <>
       <Overlay
         onClick={onOverlayClick}
@@ -318,9 +318,10 @@ function Tv() {
       />
       <BigTv
         style={{ top: scrollY.get() + 100 }}
-        layoutId={`${bigTvMatch.params.tvId-i}`}
+        layoutId={String(`${bigTvMatch.params.tvId-i}`)}
       >
-        {clickedTv && (
+        
+        { clickedTv  &&(
           <>
             <BigCover
           style={{
@@ -328,10 +329,10 @@ function Tv() {
             }}
             />
             <BigTitle>{clickedTv.name}</BigTitle>
-            <BigOverview>{clickedTv.overview}</BigOverview>
+            <BigOverview>{clickedTv.overview.slice(0,300)}...</BigOverview>
           </>
         )}
-        {clickedLatestTv&& !clickedTv && (
+        { clickedLatestTv && !clickedTv && i===3 && (
           <>
             <BigCover
           style={{
@@ -339,13 +340,14 @@ function Tv() {
             }}
             />
             <BigTitle>{clickedLatestTv.name}</BigTitle>
-            <BigOverview>{clickedLatestTv.overview ? clickedLatestTv.overview : "No overview"}</BigOverview>
-                      <BigOverview>Status : {clickedLatestTv.status }</BigOverview>
+            <BigOverview>{clickedLatestTv.overview}</BigOverview>
           </>
         )}
+       
+        
       </BigTv>
     </>
-  ) : null}
+  )}
   </AnimatePresence>
 
 
@@ -361,4 +363,16 @@ function Tv() {
     </Wrapper>
   );
 }
+{/* { i===3 ? (
+          <>
+            <BigCover
+          style={{
+              backgroundImage: clickedLatestTv.backdrop_path ? `linear-gradient(to top, black, transparent),url(${makeImagePath(clickedLatestTv.backdrop_path,"w500")})` : `linear-gradient(to top, black, transparent),url(${makeNoImg})`
+            }}
+            />
+            <BigTitle>{clickedLatestTv.name}</BigTitle>
+            <BigOverview>{clickedLatestTv.overview ? clickedLatestTv.overview : "No overview"}</BigOverview>
+                      <BigOverview>Status : {clickedLatestTv.status }</BigOverview>
+          </>
+        ):null} */}
 export default Tv;
