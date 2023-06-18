@@ -106,7 +106,7 @@ const Overlay = styled(motion.div)`
   opacity: 0;
 `;
 
-const BigMovie = styled(motion.div)`
+const BigTv = styled(motion.div)`
   position: absolute;
   width: 40vw;
   height: 80vh;
@@ -203,9 +203,9 @@ function Tv() {
   const { scrollY } = useViewportScroll();
   const clickedTv =
     bigTvMatch?.params.tvId &&
-    currentDataBranch?.results.find((tv:any)=> tv.id === +bigTvMatch.params.tvId)
+    currentDataBranch?.results?.find((tv:any)=> tv.id === +bigTvMatch.params.tvId)
   const clickedLatestTv =
-    bigTvMatch?.params.movieId && currentDataBranch
+  currentDataBranch
   console.log(clickedLatestTv)
   const toggleLeaving = () => setLeaving((prev) => !prev);
   const onBoxClicked = (tvId: number, branch:number) => {
@@ -253,7 +253,7 @@ function Tv() {
               >
              {data[i]?.results?.slice(1).slice(offset * index, offset * index + offset).map((tv:any) => (
                     <Box
-                      layoutId={`${tv.id}-${i}`}
+                      layoutId={`${tv.id-i}`}
                       key={tv.id}
                       whileHover="hover"
                       initial="normal"
@@ -284,7 +284,7 @@ function Tv() {
                 key={index}
               >
                     <Box
-                      layoutId={`${data[3]?.id}-${i}`}
+                      layoutId={`${data[3]?.id}-${i}`+""}
                       key={data[3]?.id}
                       whileHover="hover"
                       initial="normal"
@@ -302,6 +302,7 @@ function Tv() {
           </Slider>
           }
           
+
           </>
           ))}
 
@@ -315,9 +316,9 @@ function Tv() {
         exit={{ opacity: 0 }}
         animate={{ opacity: 1 }}
       />
-      <BigMovie
+      <BigTv
         style={{ top: scrollY.get() + 100 }}
-        layoutId={`${bigTvMatch.params.tvId}-${i}`}
+        layoutId={`${bigTvMatch.params.tvId-i}`}
       >
         {clickedTv && (
           <>
@@ -330,24 +331,28 @@ function Tv() {
             <BigOverview>{clickedTv.overview}</BigOverview>
           </>
         )}
-        
-        {clickedLatestTv && !clickedTv && (
+        {clickedLatestTv&& !clickedTv && (
           <>
             <BigCover
-              style={{
-                backgroundImage: `linear-gradient(to top, black, transparent),url(${makeComingSoonImg})`,
-              }}
+          style={{
+              backgroundImage: clickedLatestTv.backdrop_path ? `linear-gradient(to top, black, transparent),url(${makeImagePath(clickedLatestTv.backdrop_path,"w500")})` : `linear-gradient(to top, black, transparent),url(${makeNoImg})`
+            }}
             />
             <BigTitle>{clickedLatestTv.name}</BigTitle>
             <BigOverview>{clickedLatestTv.overview ? clickedLatestTv.overview : "No overview"}</BigOverview>
-            <BigOverview>Status : {clickedLatestTv.status }</BigOverview>
+                      <BigOverview>Status : {clickedLatestTv.status }</BigOverview>
           </>
         )}
-      </BigMovie>
+      </BigTv>
     </>
   ) : null}
-</AnimatePresence>
+  </AnimatePresence>
+
+
+
+
            ))}
+    
 
 
 
