@@ -6,7 +6,7 @@ import { getAiringTodayTv,
   getPopularTv,
   getLatestTv,
   IGetTvResults } from "../api";
-import { makeImagePath,makeComingSoonImg } from "../utils";
+import { makeImagePath,makeComingSoonImg,makeNoImg } from "../utils";
 import { useState } from "react";
 import { useHistory, useRouteMatch } from "react-router-dom";
 
@@ -188,7 +188,7 @@ const offset = 6;
 
 function Tv() {
 
-  const {data : nowAiringData, isLoading : nowAiringDataLoading} = useQuery<IGetTvResults>(["tv", "nowAiring"], getAiringTodayTv);
+  const {data : nowAiringData, isLoading : nowAiringDataLoading} = useQuery<IGetTvResults>(["airingTv", "nowAiring"], getAiringTodayTv);
   const {data : topRateData, isLoading : topRatedDataLoading } = useQuery<IGetTvResults>(["tv", "topRated"], getTopRatedTv);
   const {data : latestData, isLoading : latestDataLoading } = useQuery(["tv", "latest"], getLatestTv);
   const {data : popularData, isLoading : popularDataLoading } = useQuery<IGetTvResults>(["tv", "popular"], getPopularTv);
@@ -203,7 +203,7 @@ function Tv() {
   const { scrollY } = useViewportScroll();
   const clickedTv =
     bigTvMatch?.params.tvId &&
-    currentDataBranch?.results?.find((tv:any)=> tv.id === +bigTvMatch.params.tvId)
+    currentDataBranch?.results.find((tv:any)=> tv.id === +bigTvMatch.params.tvId)
   const clickedLatestTv =
     bigTvMatch?.params.movieId && currentDataBranch
   console.log(clickedLatestTv)
@@ -240,7 +240,7 @@ function Tv() {
             { i !==3 ?
           <Slider className={`branch_${i}`}>
           <BranchTitle>
-                    {i === 0 ? "Airing" :  i === 1 ? "TopRated " : i === 2 ? "Popular " : "Latest"}
+                    {i === 0 ? "On Airing" :  i === 1 ? "TopRated " : i === 2 ? "Popular " : "Latest"}
             </BranchTitle>
             <AnimatePresence initial={false} onExitComplete={toggleLeaving}>
               <Row
@@ -253,14 +253,14 @@ function Tv() {
               >
              {data[i]?.results?.slice(1).slice(offset * index, offset * index + offset).map((tv:any) => (
                     <Box
-                      layoutId={tv.id + ""}
+                      layoutId={`${tv.id}-${i}`}
                       key={tv.id}
                       whileHover="hover"
                       initial="normal"
                       variants={boxVariants}
                       onClick={() => onBoxClicked(tv.id,i)}
                       transition={{ type: "tween" }}
-                      bgPhoto={makeImagePath(tv.backdrop_path, "w500")}
+                      bgPhoto={tv.backdrop_path ? makeImagePath(tv.backdrop_path, "w500") :makeNoImg }
                     >
                       <Info variants={infoVariants}>
                         <h4>{tv.name}</h4>
@@ -284,7 +284,7 @@ function Tv() {
                 key={index}
               >
                     <Box
-                      layoutId={data[3]?.id + ""}
+                      layoutId={`${data[3]?.id}-${i}`}
                       key={data[3]?.id}
                       whileHover="hover"
                       initial="normal"
@@ -292,7 +292,6 @@ function Tv() {
                       onClick={() => onBoxClicked(data[3]?.id,i)}
                       transition={{ type: "tween" }}
                       bgPhoto={makeComingSoonImg}
-                      
                     >
                       <Info variants={infoVariants}>
                         <h4>{data[3]?.name}</h4>
@@ -302,51 +301,56 @@ function Tv() {
             </AnimatePresence>
           </Slider>
           }
+          
           </>
           ))}
 
 
+{[0,1, 2,3].map(i => (
+  <AnimatePresence>
+  {bigTvMatch ? (
+    <>
+      <Overlay
+        onClick={onOverlayClick}
+        exit={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+      />
+      <BigMovie
+        style={{ top: scrollY.get() + 100 }}
+        layoutId={`${bigTvMatch.params.tvId}-${i}`}
+      >
+        {clickedTv && (
+          <>
+            <BigCover
+          style={{
+              backgroundImage: clickedTv.backdrop_path ? `linear-gradient(to top, black, transparent),url(${makeImagePath(clickedTv.backdrop_path,"w500")})` : `linear-gradient(to top, black, transparent),url(${makeNoImg})`
+            }}
+            />
+            <BigTitle>{clickedTv.name}</BigTitle>
+            <BigOverview>{clickedTv.overview}</BigOverview>
+          </>
+        )}
+        
+        {clickedLatestTv && !clickedTv && (
+          <>
+            <BigCover
+              style={{
+                backgroundImage: `linear-gradient(to top, black, transparent),url(${makeComingSoonImg})`,
+              }}
+            />
+            <BigTitle>{clickedLatestTv.name}</BigTitle>
+            <BigOverview>{clickedLatestTv.overview ? clickedLatestTv.overview : "No overview"}</BigOverview>
+            <BigOverview>Status : {clickedLatestTv.status }</BigOverview>
+          </>
+        )}
+      </BigMovie>
+    </>
+  ) : null}
+</AnimatePresence>
+           ))}
 
-          <AnimatePresence>
-            {bigTvMatch ? (
-              <>
-                <Overlay
-                  onClick={onOverlayClick}
-                  exit={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                />
-                <BigMovie
-                  style={{ top: scrollY.get() + 100 }}
-                  layoutId={bigTvMatch.params.tvId}
-                >
-                  {clickedTv && (
-                    <>
-                      <BigCover
-                        style={{
-                          backgroundImage:`linear-gradient(to top, black, transparent),url(${makeImagePath(clickedTv.backdrop_path,"w500")})`
-                        }}
-                      />
-                      <BigTitle>{clickedTv.name}</BigTitle>
-                      <BigOverview>{clickedTv.overview}</BigOverview>
-                    </>
-                  )}
-                  
-                  {clickedLatestTv && !clickedTv && (
-                    <>
-                      <BigCover
-                        style={{
-                          backgroundImage: `linear-gradient(to top, black, transparent),url(${makeComingSoonImg})`,
-                        }}
-                      />
-                      <BigTitle>{clickedLatestTv.name}</BigTitle>
-                      <BigOverview>{clickedLatestTv.overview ? clickedLatestTv.overview : "No overview"}</BigOverview>
-                      <BigOverview>Status : {clickedLatestTv.status }</BigOverview>
-                    </>
-                  )}
-                </BigMovie>
-              </>
-            ) : null}
-          </AnimatePresence>
+
+
         </>
       )}
     </Wrapper>

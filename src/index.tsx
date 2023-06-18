@@ -75,7 +75,6 @@ a {
 const client = new QueryClient();
 
 ReactDOM.render(
-  <React.StrictMode>
     <RecoilRoot>
       <QueryClientProvider client={client}>
         <ThemeProvider theme={theme}>
@@ -83,7 +82,6 @@ ReactDOM.render(
           <App />
         </ThemeProvider>
       </QueryClientProvider>
-    </RecoilRoot>
-  </React.StrictMode>,
+    </RecoilRoot>,
   document.getElementById("root")
 );

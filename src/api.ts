@@ -76,3 +76,13 @@ export function getLatestTv() {
       response => response.json()
   );
 }
+export function searchMovies(keyword:string|null) {
+  return fetch(`${BASE_PATH}/search/movie?api_key=${API_KEY}&query=${keyword}&language=en-US&page=1`).then(
+      response => response.json()
+  );
+}
+export function searchTvs(keyword:string|null) {
+  return fetch(`${BASE_PATH}/search/tv?api_key=${API_KEY}&query=${keyword}&language=en-US&page=1`).then(
+      response => response.json()
+  );
+}
