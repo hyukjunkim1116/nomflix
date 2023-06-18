@@ -2,7 +2,7 @@ import { useQuery } from "react-query";
 import styled from "styled-components";
 import { motion, AnimatePresence, useViewportScroll } from "framer-motion";
 import { getMovies, IGetMoviesResult,getTopRatedMovies,getUpcomingMovies,getLatestMovies } from "../api";
-import { makeImagePath,makeComingSoonImg } from "../utils";
+import { makeImagePath,makeComingSoonImg,makeNoImg } from "../utils";
 import { useState } from "react";
 import { useHistory, useRouteMatch } from "react-router-dom";
 
@@ -112,6 +112,7 @@ const BigMovie = styled(motion.div)`
   border-radius: 15px;
   overflow: hidden;
   background-color: ${(props) => props.theme.black.lighter};
+  box-shadow: 5px 10px 30px 10px red;
 `;
 
 const BigCover = styled.div`
@@ -311,7 +312,9 @@ function Home() {
                   animate={{ opacity: 1 }}
                 />
                 <BigMovie
-                  style={{ top: scrollY.get() + 100 }}
+                  style={{ top: scrollY.get() + 100,
+                    // backgroundImage: clickedLatestTv.backdrop_path ? `linear-gradient(to top, black, transparent),url(${makeImagePath(clickedLatestTv.backdrop_path,"w500")})` : `linear-gradient(to top, black, transparent),url(${makeNoImg})`
+                    backgroundImage: clickedLatestMovie.poster_path === null ?`linear-gradient(to top, black, transparent),url(${makeComingSoonImg})`:`linear-gradient(to top, black, transparent),url(${makeImagePath(clickedMovie.poster_path,"w500")})`}}
                   layoutId={bigMovieMatch.params.movieId}
                 >
                   {clickedMovie && (
@@ -323,6 +326,8 @@ function Home() {
                       />
                       <BigTitle>{clickedMovie.title}</BigTitle>
                       <BigOverview>{clickedMovie.overview}</BigOverview>
+                      <BigOverview>{clickedMovie.original_language}</BigOverview>
+                      <BigOverview>{clickedMovie.release_date}</BigOverview>
                     </>
                   )}
                   
